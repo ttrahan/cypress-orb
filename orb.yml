@@ -5,6 +5,15 @@ description: "Provides functionality related to running Cypress.io tests"
 executors:
   default:
     description:
+      "Uses an image with Cypress CLI pre-installed" 
+    parameters:
+      tag:
+        type: string
+        default: "8"
+    docker:
+      - image: cypress/base:<< parameters.tag >>
+  chrome:
+    description:
       "Uses an image with all dependencies for Cypress included browsers 
       Chrome 67"
     parameters:
