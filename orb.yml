@@ -13,6 +13,16 @@ executors:
         default: "chrome67"
     docker:
       - image: cypress/browsers:<< parameters.tag >>
+  basepack:
+    description:
+      Uses the basic buildpack-deps image, which has the
+      prerequisites for installing Cypress' CLI.
+    parameters:
+      tag:
+        type: string
+        default: "bionic"
+    docker:
+      - image: buildpack-deps:<< parameters.tag >>
 
 commands:
   install:
@@ -31,3 +41,10 @@ jobs:
     steps:
       - install
       - checkout
+      - cypress run
+  install:
+    executor: basepack
+    steps:
+      - install
+      - checkout
+      - cypress run
