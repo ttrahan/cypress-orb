@@ -41,8 +41,10 @@ commands:
           command: |
             if [[ $(command -v npm) == "" ]]; then
               echo "NPM is required to install Cypress and not installed."
+              return 1
             else 
-              if [[ $(command -v cypress) == "" ]]; then
+              if [[ $(command -v $(npm bin)/cypress) == "" ]]; then
+                cd 
                 npm install cypress
               else
                 echo "Cypress is already installed. No operation was performed."
@@ -50,12 +52,28 @@ commands:
             fi
 jobs:
   install:
+    parameters:
+      dir:
+        description:
+          "The root directory of your source code tree. The default value is  
+          the location of $CIRCLE_WORKING_DIRECTORY"
+        type: string
+        default: $CIRCLE_WORKING_DIRECTORY
     executor: default
+    working_directory: << parameters.dir >>
     steps:
       - install
       - run: $(npm bin)/cypress run
   install_basepack:
+    parameters:
+      dir:
+        description:
+          "The root directory of your source code tree. The default value is  
+          the location of $CIRCLE_WORKING_DIRECTORY"
+        type: string
+        default: $CIRCLE_WORKING_DIRECTORY
     executor: basepack
+    working_directory: << parameters.dir >>
     steps:
       - install
       - run: $(npm bin)/cypress run
