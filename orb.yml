@@ -41,10 +41,10 @@ jobs:
     steps:
       - install
       - checkout
-      - cypress run
-  install:
+      - run: cypress run
+  install_basepack:
     executor: basepack
     steps:
       - install
       - checkout
-      - cypress run
+      - run: cypress run
