@@ -46,7 +46,7 @@ jobs:
       - checkout
       - install
       - run: $(npm bin)/cypress run
-  install_basepack:
+  install_browser:
     executor: browser
     steps:
       - checkout
