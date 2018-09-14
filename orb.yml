@@ -5,33 +5,23 @@ description: "Provides functionality related to running Cypress.io tests"
 executors:
   default:
     description:
-      "Uses an image with Cypress CLI pre-installed" 
+      "Uses an image with all dependencies for the Cypress CLI pre-installed" 
     parameters:
       tag:
         type: string
         default: "8"
     docker:
       - image: cypress/base:<< parameters.tag >>
-  chrome:
+  browser:
     description:
-      "Uses an image with all dependencies for Cypress included browsers 
-      Chrome 67"
+      "Uses an image with all dependencies for the Cypress CLI pre-installed 
+       plus the browser specified via the 'tag' parameter (default = Chrome 67)"
     parameters:
       tag:
         type: string
         default: "chrome67"
     docker:
       - image: cypress/browsers:<< parameters.tag >>
-  basepack:
-    description:
-      Uses the basic buildpack-deps image, which has the
-      prerequisites for installing Cypress' CLI.
-    parameters:
-      tag:
-        type: string
-        default: "bionic"
-    docker:
-      - image: buildpack-deps:<< parameters.tag >>
 
 commands:
   install:
@@ -44,35 +34,20 @@ commands:
               exit 1
             else 
               if [[ $(command -v $(npm bin)/cypress) == "" ]]; then
-                cd 
-                sudo npm install cypress --global
+                npm install cypress
               else
                 echo "Cypress is already installed. No operation was performed."
               fi
             fi
 jobs:
   install:
-    parameters:
-      dir:
-        description:
-          "the root directory of your source code tree. the default value is  
-          the location of $circle_working_directory"
-        type: string
-        default: ""
     executor: default
     steps:
       - checkout
       - install
       - run: $(npm bin)/cypress run
   install_basepack:
-    parameters:
-      dir:
-        description:
-          "the root directory of your source code tree. the default value is  
-          the location of $circle_working_directory"
-        type: string
-        default: ""
-    executor: basepack
+    executor: browser
     steps:
       - checkout
       - install
